@@ -97,7 +97,15 @@ Sigma2 = zeros(num_vox,1);
 P = zeros(num_vox,1);
 
 % loop over window positions and denoise
+fprintf('Denoising: ')
+str = '';
 for i = 1:num_vox
+    if (i==1) || (floor(i/num_vox*100)>floor((i-1)/num_vox*100))
+        fprintf(repmat('\b',1,length(str)-1))
+        str = [num2str(floor(i/num_vox*100)) ' %%'];
+        fprintf(str)
+    end
+
     % check if sliding window is within bounds
     index_vector = get_index_vector(dims_vox,i); % indices of window corner
     if any(index_vector-1+window>dims_vox) % if outside bounds, move window to next position
@@ -148,6 +156,7 @@ for i = 1:num_vox
     Sigma2(vox_indices) = Sigma2(vox_indices) + sigma2;
     P(vox_indices,1:length(p)) = P(vox_indices,:) + p;
 end
+fprintf('\n')
 
 % assign to skipped voxels
 skipped_vox = count==0;
